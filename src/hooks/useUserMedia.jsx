@@ -89,6 +89,7 @@ const useUserMedia = () => {
     capturedImgSrc,
     errorMessage,
     flipCamera,
+    setCapturedImgSrc,
   };
 };
 

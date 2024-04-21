@@ -2,12 +2,23 @@ import { useState } from "react";
 import useUserMedia from "../hooks/useUserMedia";
 import ZoomControls from "./Zoom";
 import AspectRatioSelector from "./AspectRatio";
+import { RiCameraLensFill } from "react-icons/ri";
+import { LuRefreshCw } from "react-icons/lu";
+import { FaFolder } from "react-icons/fa";
+import { Gallery } from "./Gallery";
 
 const Camera = () => {
-  const { videoRef, capture, capturedImgSrc, errorMessage, flipCamera } =
-    useUserMedia();
+  const {
+    videoRef,
+    capture,
+    capturedImgSrc,
+    errorMessage,
+    flipCamera,
+    setCapturedImgSrc,
+  } = useUserMedia();
   const [zoomLevel, setZoomLevel] = useState(1);
   const [aspectRatio, setAspectRatio] = useState("16:9");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const ASPECT_RATIOS = ["16:9", "4:3", "1:1"];
 
   const handleZoomIn = () => {
@@ -24,6 +35,12 @@ const Camera = () => {
     setAspectRatio(ratio);
   };
 
+  const handleDeleteImage = (index) => {
+    setCapturedImgSrc((prevCapturedImgSrc) =>
+      prevCapturedImgSrc.filter((_, i) => i !== index)
+    );
+  };
+
   const videoStyle = {
     transform: `scale(${zoomLevel})`,
     width: `${aspectRatio.split(":")[0]}00px`,
@@ -31,44 +48,67 @@ const Camera = () => {
   };
 
   return (
-    <div className="container">
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        width={600}
-        height={600}
-        style={videoStyle}
-      ></video>
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
+    <div
+      style={{
+        width: `calc(${parseInt(aspectRatio.split(":")[0])}00px + 20px)`,
+        height: `calc(${parseInt(aspectRatio.split(":")[1])}00px)`,
+      }}
+    >
+      <div className="relative">
+        <div className={`aspect-ratio-${aspectRatio}`}>
+          <AspectRatioSelector
+            aspectRatios={ASPECT_RATIOS}
+            selectedAspectRatio={aspectRatio}
+            handleAspectRatioChange={handleAspectRatioChange}
+            errorMessage={errorMessage}
+          />
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            width={600}
+            height={600}
+            style={videoStyle}
+          ></video>
 
-      <div className="btn-container">
-        <button onClick={capture} disabled={!!errorMessage}>
-          Capture photo
-        </button>
-      </div>
-      <button onClick={flipCamera} disabled={!!errorMessage}>
-        Flip Camera
-      </button>
-      <ZoomControls
-        handleZoomIn={handleZoomIn}
-        handleZoomOut={handleZoomOut}
-        errorMessage={errorMessage}
-      />
-      <AspectRatioSelector
-        aspectRatios={ASPECT_RATIOS}
-        selectedAspectRatio={aspectRatio}
-        handleAspectRatioChange={handleAspectRatioChange}
-        errorMessage={errorMessage}
-      />
-      {capturedImgSrc && (
-        <div className="captured-image">
-          <h2>Captured Image</h2>
-          {capturedImgSrc.map((src, index) => (
-            <img key={index} src={src} alt={`captured-${index}`} />
-          ))}
+          <ZoomControls
+            handleZoomIn={handleZoomIn}
+            handleZoomOut={handleZoomOut}
+            errorMessage={errorMessage}
+          />
         </div>
-      )}
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
+        <div className="flex justify-between items-center mt-2">
+          <div>
+            <FaFolder
+              className="ml-20 cursor-pointer"
+              onClick={() => setIsModalOpen(true)}
+              style={{ fontSize: "50px", color: "blue" }}
+            />
+          </div>
+          <div>
+            <RiCameraLensFill
+              onClick={capture}
+              disabled={!!errorMessage}
+              style={{ fontSize: "50px", color: "red", cursor: "pointer" }}
+            />
+          </div>
+          <div>
+            <LuRefreshCw
+              className="mr-20"
+              style={{ fontSize: "50px", color: "blue", cursor: "pointer" }}
+              onClick={flipCamera}
+              disabled={!!errorMessage}
+            />
+          </div>
+        </div>
+      </div>
+      <Gallery
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        images={capturedImgSrc}
+        onDelete={handleDeleteImage}
+      />
     </div>
   );
 };
