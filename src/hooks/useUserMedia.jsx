@@ -1,60 +1,93 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
-function useUserMedia(constraints = { video: true }, startAutomatically) {
+const useUserMedia = () => {
   const [stream, setStream] = useState(null);
-  const [error, setError] = useState(null);
-  const [isInitialized, setIsInitialized] = useState(false);
-
+  const [imgSrc, setImgSrc] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [capturedImgSrc, setCapturedImgSrc] = useState([]);
+  const videoRef = useRef();
+  const [cameraDevices, setCameraDevices] = useState([]);
+  const [selectedCameraIndex, setSelectedCameraIndex] = useState(0);
   useEffect(() => {
-    let didCancel = false;
-    const getUserMedia = async () => {
+    const initializeCamera = async () => {
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia(
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoDevices = devices.filter(
+          (device) => device.kind === "videoinput"
+        );
+        setCameraDevices(videoDevices);
+        if (videoDevices.length === 0) {
+          setErrorMessage("No cameras found.");
+          return;
+        }
+        if (
+          selectedCameraIndex === null ||
+          selectedCameraIndex >= videoDevices.length
+        ) {
+          setSelectedCameraIndex(0);
+        }
+
+        const constraints = {
+          video: {
+            deviceId: { exact: videoDevices[selectedCameraIndex].deviceId },
+          },
+        };
+        const newStream = await navigator.mediaDevices.getUserMedia(
           constraints
         );
-        if (!didCancel) {
-          setStream(mediaStream);
-          setIsInitialized(true);
-        }
-      } catch (err) {
-        if (!didCancel) {
-          setError(err);
-        }
+        setStream(newStream);
+        videoRef.current.srcObject = newStream;
+        setErrorMessage("");
+      } catch (error) {
+        console.error("Error accessing webcam:", error);
+        setErrorMessage("Error accessing webcam.");
       }
     };
 
-    if (startAutomatically) {
-      getUserMedia();
-    }
-
+    initializeCamera();
     return () => {
-      didCancel = true;
       if (stream) {
         stream.getTracks().forEach((track) => {
           track.stop();
         });
-        // Additionally, consider releasing any event listeners or timers here
       }
     };
-  }, [constraints, startAutomatically]);
+  }, [selectedCameraIndex]);
 
-  const captureImage = async () => {
-    if (!stream) {
-      throw new Error("No media stream available");
+  const flipCamera = () => {
+    if (cameraDevices.length <= 1) {
+      setErrorMessage("No other camera found.");
+      return;
     }
+    setSelectedCameraIndex((selectedCameraIndex + 1) % cameraDevices.length);
+  };
 
-    const videoTrack = stream.getVideoTracks()[0];
-    const imageCapture = new ImageCapture(videoTrack);
-    const blob = await imageCapture.takePhoto();
-    return URL.createObjectURL(blob);
+  const capture = () => {
+    if (!stream) {
+      setErrorMessage("Camera not available.");
+      return;
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    canvas.getContext("2d").drawImage(videoRef.current, 0, 0);
+
+    const imageSrc = canvas.toDataURL("image/jpeg");
+    setImgSrc(imageSrc);
+    setCapturedImgSrc((prevCapturedImgSrc) => [
+      ...prevCapturedImgSrc,
+      imageSrc,
+    ]);
   };
 
   return {
-    captureImage,
-    error,
-    stream,
-    isInitialized,
+    videoRef,
+    imgSrc,
+    capture,
+    capturedImgSrc,
+    errorMessage,
+    flipCamera,
   };
-}
+};
 
 export default useUserMedia;
