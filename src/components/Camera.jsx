@@ -1,11 +1,14 @@
 import { useState } from "react";
 import useUserMedia from "../hooks/useUserMedia";
 import ZoomControls from "./Zoom";
+import AspectRatioSelector from "./AspectRatio";
 
 const Camera = () => {
   const { videoRef, capture, capturedImgSrc, errorMessage, flipCamera } =
     useUserMedia();
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [aspectRatio, setAspectRatio] = useState("16:9");
+  const ASPECT_RATIOS = ["16:9", "4:3", "1:1"];
 
   const handleZoomIn = () => {
     setZoomLevel(zoomLevel + 0.1);
@@ -17,8 +20,14 @@ const Camera = () => {
     }
   };
 
+  const handleAspectRatioChange = (ratio) => {
+    setAspectRatio(ratio);
+  };
+
   const videoStyle = {
     transform: `scale(${zoomLevel})`,
+    width: `${aspectRatio.split(":")[0]}00px`,
+    height: `${aspectRatio.split(":")[1]}00px`,
   };
 
   return (
@@ -44,6 +53,12 @@ const Camera = () => {
       <ZoomControls
         handleZoomIn={handleZoomIn}
         handleZoomOut={handleZoomOut}
+        errorMessage={errorMessage}
+      />
+      <AspectRatioSelector
+        aspectRatios={ASPECT_RATIOS}
+        selectedAspectRatio={aspectRatio}
+        handleAspectRatioChange={handleAspectRatioChange}
         errorMessage={errorMessage}
       />
       {capturedImgSrc && (
