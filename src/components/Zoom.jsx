@@ -1,19 +1,19 @@
 import PropTypes from "prop-types";
 import { BsPlusSquare } from "react-icons/bs";
 import { CiSquareMinus } from "react-icons/ci";
-const ZoomControls = ({ handleZoomIn, handleZoomOut, errorMessage }) => {
+const ZoomControls = ({ handleZoomIn, handleZoomOut, errorMessage , aspectRatio}) => {
   return (
     <>
-      <div>
+      <div style={{ width: "100%", marginTop: "2px", marginRight: "10px",}}>
         <BsPlusSquare
           onClick={handleZoomIn}
           disabled={!!errorMessage}
-          style={{ fontSize: "30px",     width: "40px" }}
+          style={{ width: "40px",  fontSize: aspectRatio === "1:1" ? "11px" : "30px" }}
         />
         <CiSquareMinus
           onClick={handleZoomOut}
           disabled={!!errorMessage}
-          style={{ fontSize: "40px", width: "40px" }}
+          style={{ width: "40px", fontSize: aspectRatio === "1:1" ? "15px" : "40px"  }}
         />
       </div>
     </>

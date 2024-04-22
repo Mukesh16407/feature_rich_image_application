@@ -31,6 +31,8 @@ const Camera = () => {
     }
   };
 
+  console.log("aspectRatio", aspectRatio)
+
   const handleAspectRatioChange = (ratio) => {
     setAspectRatio(ratio);
   };
@@ -46,7 +48,7 @@ const Camera = () => {
     width: `${aspectRatio.split(":")[0]}00px`,
     // height: `${aspectRatio.split(":")[1]}00px`,
   };
-
+console.log("aspectRatio",aspectRatio)
   return (
     <div>
     <div
@@ -75,26 +77,26 @@ const Camera = () => {
         <div>
           <div
             className="flex justify-around items-center"
-            style={{ border: "1px solid gray", background: "#b3cbf2" }}
+            style={{ border: "1px solid gray", background: "#b3cbf2" ,}}
           >
             <div>
               <FaFolder
-                className="ml-20 cursor-pointer"
                 onClick={() => setIsModalOpen(true)}
-                style={{ fontSize: "50px", color: "blue" }}
+                style={{  color: "blue" ,cursor: "pointer", fontSize: aspectRatio === "1:1" ? "20px" : "30px"
+              }}
               />
             </div>
             <div>
               <RiCameraLensFill
                 onClick={capture}
                 disabled={!!errorMessage}
-                style={{ fontSize: "50px", color: "red", cursor: "pointer" }}
+                style={{ color: "red", cursor: "pointer", fontSize: aspectRatio === "1:1" ? "20px" : "30px" }}
               />
             </div>
             <div>
               <LuRefreshCw
-                className="mr-20"
-                style={{ fontSize: "50px", color: "blue", cursor: "pointer" }}
+              
+                style={{ color: "blue", cursor: "pointer", fontSize: aspectRatio === "1:1" ? "20px" : "30px" }}
                 onClick={flipCamera}
                 disabled={!!errorMessage}
               />
@@ -123,6 +125,7 @@ const Camera = () => {
             selectedAspectRatio={aspectRatio}
             handleAspectRatioChange={handleAspectRatioChange}
             errorMessage={errorMessage}
+            aspectRatio={aspectRatio}
           />
         </div>
         <div>
@@ -130,6 +133,7 @@ const Camera = () => {
             handleZoomIn={handleZoomIn}
             handleZoomOut={handleZoomOut}
             errorMessage={errorMessage}
+            aspectRatio={aspectRatio}
           />
         </div>
       </div>

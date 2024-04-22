@@ -5,13 +5,16 @@ const AspectRatioSelector = ({
   selectedAspectRatio,
   handleAspectRatioChange,
   errorMessage,
+  aspectRatio
 }) => {
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "column",
-        gap: "10px",
+        gap: aspectRatio === "1:1" ? "2px" : "10px",
+        width: "100%",
+        
       }}
     >
       {aspectRatios?.map((ratio) => (
@@ -24,11 +27,9 @@ const AspectRatioSelector = ({
           }
           style={{
             background: "rgba(0, 0, 0, 0.5)",
-            border: "1px solid blue",
             color: "white",
-            width: "50px",
             borderRadius: "2px",
-            marginLeft: "6px"
+            fontSize: aspectRatio === "1:1" ? "7px" : "16px"
           }}
         >
           {ratio}
