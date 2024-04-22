@@ -26,7 +26,7 @@ const Camera = () => {
   };
 
   const handleZoomOut = () => {
-    if (zoomLevel > 0.1) {
+    if (zoomLevel > 1) {
       setZoomLevel(zoomLevel - 0.1);
     }
   };
