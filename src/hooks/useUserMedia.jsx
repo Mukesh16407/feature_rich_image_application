@@ -8,6 +8,8 @@ const useUserMedia = () => {
   const videoRef = useRef();
   const [cameraDevices, setCameraDevices] = useState([]);
   const [selectedCameraIndex, setSelectedCameraIndex] = useState(0);
+
+  console.log(selectedCameraIndex, "selectedCameraIndex");
   useEffect(() => {
     const initializeCamera = async () => {
       try {
@@ -29,7 +31,7 @@ const useUserMedia = () => {
 
         const constraints = {
           video: {
-            deviceId: { exact: videoDevices[selectedCameraIndex].deviceId },
+            facingMode: selectedCameraIndex === 0 ? "user" : "environment",
           },
         };
         const newStream = await navigator.mediaDevices.getUserMedia(
@@ -59,6 +61,7 @@ const useUserMedia = () => {
       setErrorMessage("No other camera found.");
       return;
     }
+
     setSelectedCameraIndex((selectedCameraIndex + 1) % cameraDevices.length);
   };
 

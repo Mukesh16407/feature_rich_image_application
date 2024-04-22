@@ -1,4 +1,4 @@
-import React from "react";
+import PropTypes from "prop-types";
 import { RxCross2 } from "react-icons/rx";
 export const Gallery = ({ isOpen, onClose, images, onDelete }) => {
   if (!isOpen) return null;
@@ -39,4 +39,11 @@ export const Gallery = ({ isOpen, onClose, images, onDelete }) => {
       </div>
     </div>
   );
+};
+
+Gallery.propTypes = {
+  isOpen: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  images: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
