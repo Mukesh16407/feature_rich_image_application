@@ -4,7 +4,7 @@ import { CiSquareMinus } from "react-icons/ci";
 const ZoomControls = ({ handleZoomIn, handleZoomOut, errorMessage , aspectRatio}) => {
   return (
     <>
-      <div style={{ width: "100%", marginTop: "2px", marginRight: "10px",}}>
+      <div style={{ width: "100%", marginTop: "2px", marginRight:  aspectRatio === "4:3" ? "20px" : "8px"}}>
         <BsPlusSquare
           onClick={handleZoomIn}
           disabled={!!errorMessage}
