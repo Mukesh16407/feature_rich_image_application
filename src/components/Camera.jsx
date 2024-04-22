@@ -78,7 +78,7 @@ const Camera = () => {
           />
         </div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
-        <div className="flex justify-between items-center mt-2">
+        <div className="flex justify-around items-center mt-2">
           <div>
             <FaFolder
               className="ml-20 cursor-pointer"
