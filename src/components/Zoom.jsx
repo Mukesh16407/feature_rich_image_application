@@ -4,25 +4,16 @@ import { CiSquareMinus } from "react-icons/ci";
 const ZoomControls = ({ handleZoomIn, handleZoomOut, errorMessage }) => {
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: "0",
-          right: "0",
-          zIndex: "1",
-          marginRight: "14%",
-          marginTop: "1%",
-        }}
-      >
+      <div>
         <BsPlusSquare
           onClick={handleZoomIn}
           disabled={!!errorMessage}
-          style={{ fontSize: "45px" }}
+          style={{ fontSize: "30px",     width: "40px" }}
         />
         <CiSquareMinus
           onClick={handleZoomOut}
           disabled={!!errorMessage}
-          style={{ fontSize: "55px" }}
+          style={{ fontSize: "40px", width: "40px" }}
         />
       </div>
     </>

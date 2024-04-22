@@ -11,11 +11,7 @@ const AspectRatioSelector = ({
       style={{
         display: "flex",
         flexDirection: "column",
-        position: "absolute",
-        left: "13%",
-        top: "1%",
         gap: "10px",
-        zIndex: "1",
       }}
     >
       {aspectRatios?.map((ratio) => (
@@ -28,9 +24,11 @@ const AspectRatioSelector = ({
           }
           style={{
             background: "rgba(0, 0, 0, 0.5)",
+            border: "1px solid blue",
             color: "white",
             width: "50px",
             borderRadius: "2px",
+            marginLeft: "6px"
           }}
         >
           {ratio}
